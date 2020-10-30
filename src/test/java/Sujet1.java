@@ -31,7 +31,7 @@ public class Sujet1 {
      */
     @Test 
     public void a_predicate2() {
-        Predicate<String> pred = p -> p.isEmpty(); // TODO
+        Predicate<String> pred = p -> p.isEmpty(); 
 
         assertTrue(pred.test(""));
         assertFalse(pred.test("a"));
@@ -45,15 +45,12 @@ public class Sujet1 {
      *
      *     classname::methodname
      */
-    
-    public static boolean isEmpty(String s) {
-    	return s.isEmpty();
-    }
+
     
     @Test 
     public void a_predicate3() {
-        Predicate<String> pred = Sujet1::isEmpty; // TODO
-
+        Predicate<String> pred = String::isEmpty; 
+        
         assertTrue(pred.test(""));
         assertFalse(pred.test("a"));
     }
@@ -103,8 +100,8 @@ public class Sujet1 {
         Consumer<List<String>> c1 = list -> list.add("first");
         Consumer<List<String>> c2 = list -> list.add("second");
 
-        Consumer<List<String>> consumer = c1.andThen(c2); // TODO
-
+        Consumer<List<String>> consumer = c1.andThen(c2);
+        
         List<String> list = new ArrayList<>(Arrays.asList("a", "b", "c"));
         consumer.accept(list);
         assertEquals(Arrays.asList("a", "b", "c", "first", "second"), list);
@@ -125,13 +122,8 @@ public class Sujet1 {
     /**
      * Write an unbound method reference that returns a new, empty StringBuilder.
      */
-    public static StringBuilder newStringBuilder() {
-    	return new StringBuilder();	
-    }
-    
     @Test 
     public void d_supplier3() {
-     //  Supplier<StringBuilder> sup = Sujet1::newStringBuilder;
 	  Supplier<StringBuilder> sup = StringBuilder::new;
 
         assertEquals("", sup.get().toString());
@@ -144,7 +136,7 @@ public class Sujet1 {
      */
     @Test 
     public void e_bifunction1() {
-       BiFunction<String, String, String> bifunc = (a, b) -> a + b + a; // TODO
+       BiFunction<String, String, String> bifunc = (a, b) -> a + b + a; 
 
         assertEquals("FirstSecondFirst", bifunc.apply("First", "Second"));
     }
