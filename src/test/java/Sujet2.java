@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -77,13 +79,26 @@ public class Sujet2 {
 	 * Select the list of words from the input list whose length is greater than
 	 * the word's position in the list (starting from zero) .
 	 */
-	@Test @Ignore
+	@Test
 	public void d7_selectByLengthAndPosition() {
 		List<String> input = Arrays.asList(
 				"alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel");
 
 		List<String> result = null; // TODO
-
+		result  = IntStream.range(0, input.size())
+							.filter(i -> input.get(i).length() > i)
+							.mapToObj( i -> input.get(i))
+							.collect(Collectors.toList());
 		assertEquals(Arrays.asList("alfa", "bravo", "charlie", "delta", "foxtrot"), result);
+
+		AtomicInteger atomInt = new AtomicInteger();
+		
+		List<String> result2 = input.stream()
+				.filter(p -> p.length() > atomInt.getAndIncrement())
+				.collect(Collectors.toList());
+		
+		assertEquals(Arrays.asList("alfa", "bravo", "charlie", "delta", "foxtrot"), result2);
+
+
 	}
 }
