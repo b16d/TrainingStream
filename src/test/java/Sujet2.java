@@ -91,6 +91,7 @@ public class Sujet2 {
 							.collect(Collectors.toList());
 		assertEquals(Arrays.asList("alfa", "bravo", "charlie", "delta", "foxtrot"), result);
 
+		//A ne pas faire car on perd l'ordre en cas de parallele stream
 		AtomicInteger atomInt = new AtomicInteger();
 		
 		List<String> result2 = input.stream()

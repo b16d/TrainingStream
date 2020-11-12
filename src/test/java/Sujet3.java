@@ -84,11 +84,8 @@ public class Sujet3 {
 
 		List<Class<?>> result = Stream.
 			<Class<?>>iterate(origin,Objects::nonNull,  Class::getSuperclass)
-//			.takeWhile(Objects::nonNull)
 			.collect(Collectors.toList());
 			
-//		List<Class<?>> result = null; // TODO
-
 		Class<?> test  = origin.getSuperclass();
 		
 		List<Class<?>> classes = Arrays.asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class);
@@ -106,10 +103,10 @@ public class Sujet3 {
 		IntStream input = new Random(987523).ints(20, 0, 100);
 
 		Map<Boolean, Integer> result = input
-				.mapToObj(i -> (Integer) (i))
+				.boxed()
 				.collect(Collectors
 						.partitioningBy((i -> i  %2 == 0)
-							,Collectors.summingInt((i -> i))));
+							,Collectors.summingInt((Integer::valueOf))));
 		
 		assertEquals(516, result.get(Boolean.TRUE));
 		assertEquals(614, result.get(Boolean.FALSE));
@@ -129,7 +126,24 @@ public class Sujet3 {
 				"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
 				"k", "l", "m", "n", "o", "p", "q", "r", "s", "t")
 				.parallelStream();
-
+			
+//		String tempo = input.collect(Collectors.joining()).toString();
+		String tempo2 =input .collect(StringBuilder::new,
+//					(b,c) -> b.insert(0, c), 
+					(sb, c) -> {
+						sb.insert(0, c);
+						},
+					
+					(b1,b2) ->  {
+						b1.insert(0, b2);
+						System.out.println(b1);
+//						b1.reverse();
+//						System.out.println(b1);
+					})
+			    .toString();
+		
+//		System.out.println(tempo);
+		System.out.println(tempo2);
 		String result = input.collect(null, null, null).toString();
 		// TODO fill in lambda expressions or method references
 		// in place of the nulls in the line above.
