@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -42,10 +43,20 @@ public class Sujet4 {
 	@Test
 	public void l_string03() {
 		
-		Function<String, String> func = Function.identity();
+		Function<String, String> func = s -> {
+			if (s == null) 
+				return "";
+			else
+				return s;
+		};
+		
+		Function<String, String> func2 = s -> s == null ? "" : s;
 		
 		assertThat(func.apply("alpha")).isEqualTo("alpha");
 		assertThat(func.apply(null)).isEqualTo("");
+		
+		assertThat(func2.apply("alpha")).isEqualTo("alpha");
+		assertThat(func2.apply(null)).isEqualTo("");
 	}
 
 	/**
@@ -56,10 +67,22 @@ public class Sujet4 {
 	@Test
 	public void l_string04() {
 		
-		Function<String, String> func = Function.identity();
+
+//		Function<String, String> func = Function.identity(); version Gaetan
+		Function<String, Integer> func = s -> {
+			if (s == null) 
+				return 0;
+			else
+				return s.length();
+		};
+		
+		Function<String, Integer> func2 = s -> s == null ? 0 : s.length();
 		
 		assertThat(func.apply("alpha")).isEqualTo(5);
 		assertThat(func.apply(null)).isEqualTo(0);
+	
+		assertThat(func2.apply("alpha")).isEqualTo(5);
+		assertThat(func2.apply(null)).isEqualTo(0);
 	}
 	
 	
@@ -73,11 +96,20 @@ public class Sujet4 {
 		final List<String> list = new ArrayList<>(
 				Arrays.asList("alfa", "bravo", "charlie", "delta", "echo", "foxtrot"));
 
-
-		// XXX
+		List<String> result  = list.stream()
+			.filter(s -> s.length() %2 == 0)
+			.collect(Collectors.toList());
 		
-		assertThat(list).hasSize(2);
-		assertThat(list).contains("alfa", "echo");
+		Function<List<String>, List<String>> funct = listl -> listl.stream()
+				.filter(s -> s.length() %2 == 0)
+				.collect(Collectors.toList());
+		
+		List<String> result2 = funct.apply(list);
+		
+		assertThat(result).hasSize(2);
+		assertThat(result).contains("alfa", "echo");
+		assertThat(result2).hasSize(2);
+		assertThat(result2).contains("alfa", "echo");
 	}
 
 	/**
@@ -87,10 +119,17 @@ public class Sujet4 {
 	public void i_list02() {
 
 		final List<String> strings = Arrays.asList("alfa", null, "charlie", "delta", null, "foxtrot");
-
-		// XXX
-
-		assertThat(strings).containsExactly("alfa", "", "charlie", "delta", "", "foxtrot");
+		
+		Function <String, String> changeFunction = s -> s == null ? "" : s;
+		
+		Function<List<String>, List<String>> func = listString -> 
+			listString.stream()
+			.map(changeFunction)
+			.collect(Collectors.toList());
+			
+		List<String> result = func.apply(strings);
+		
+		assertThat(result).containsExactly("alfa", "", "charlie", "delta", "", "foxtrot");
 	}
 
 	/**
