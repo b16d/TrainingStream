@@ -30,7 +30,7 @@ public class Sujet4 {
 	@Test
 	public void l_string02() {
 		
-		Function<String, Integer> func = s -> s.length();
+		Function<String, Integer> func = String::length;
 		
 		assertThat(func.apply("alpha")).isEqualTo(5);
 		assertThat(func.apply("")).isEqualTo(0);
@@ -83,6 +83,14 @@ public class Sujet4 {
 	
 		assertThat(func2.apply("alpha")).isEqualTo(5);
 		assertThat(func2.apply(null)).isEqualTo(0);
+		
+		
+		Function<String, String> func31 = s -> s == null ? "" : s;
+		Function<String, Integer> func32 = String::length;
+		Function<String, Integer> func3 = func31.andThen(func32);
+		
+		assertThat(func3.apply("alpha")).isEqualTo(5);
+		assertThat(func3.apply(null)).isEqualTo(0);
 	}
 	
 	
@@ -93,6 +101,7 @@ public class Sujet4 {
 	@Test
 	public void h_collection01() {
 
+		//list de string
 		final List<String> list = new ArrayList<>(
 				Arrays.asList("alfa", "bravo", "charlie", "delta", "echo", "foxtrot"));
 
@@ -110,6 +119,10 @@ public class Sujet4 {
 		assertThat(result).contains("alfa", "echo");
 		assertThat(result2).hasSize(2);
 		assertThat(result2).contains("alfa", "echo");
+		
+		list.removeIf(s -> s.length() %2 != 0);
+		assertThat(list).hasSize(2);
+		assertThat(list).contains("alfa", "echo");
 	}
 
 	/**
@@ -118,7 +131,9 @@ public class Sujet4 {
 	@Test
 	public void i_list02() {
 
+		//utiliser la liste de string
 		final List<String> strings = Arrays.asList("alfa", null, "charlie", "delta", null, "foxtrot");
+		
 		
 		Function <String, String> changeFunction = s -> s == null ? "" : s;
 		
@@ -130,6 +145,9 @@ public class Sujet4 {
 		List<String> result = func.apply(strings);
 		
 		assertThat(result).containsExactly("alfa", "", "charlie", "delta", "", "foxtrot");
+		
+		strings.replaceAll(s -> s == null ? "" : s);
+		assertThat(strings).containsExactly("alfa", "", "charlie", "delta", "", "foxtrot");
 	}
 
 	/**
@@ -139,7 +157,8 @@ public class Sujet4 {
 	@Test
 	public void i_list04() {
 
-		 List<String> strings = Arrays.asList("one", "two", "three", "four", "five", "six");
+		// utiliser list string
+		final List<String> strings = Arrays.asList("one", "two", "three", "four", "five", "six");
 //		final List<String> strings = Arrays.asList("one", "two", "three", "four", "five", "six");
 
 //		List<String> test = strings.stream()
@@ -152,12 +171,15 @@ public class Sujet4 {
 		Function<List<String>, List<String>> func = list -> 
 			list.stream()
 			.sorted(Comparator.comparing(String::length)
-					.thenComparing(Comparator.comparing(String::toString)))
+					.thenComparing(Comparator.naturalOrder()))
 			.collect(Collectors.toList());
 	
 		List<String> result = func.apply(strings);
 
-//		assertThat(strings).containsExactly("one", "six", "two", "five", "four", "three");
+		strings.sort(Comparator.comparing(String::length)
+					.thenComparing(Comparator.naturalOrder()));
+		
+		assertThat(strings).containsExactly("one", "six", "two", "five", "four", "three");
 		assertThat(result).containsExactly("one", "six", "two", "five", "four", "three");
 	}
 
@@ -198,7 +220,10 @@ public class Sujet4 {
 		final Person jermaine = new Person("Jermaine", "Jackson", 61);
 
 		//
-		Comparator<Person> compareByAge = (Person a, Person b) -> a.getAge() < b.getAge() ? -1 : a.getAge() == b.getAge() ? 0 : 1 ;
+		//Comparator<Person> compareByAge = (Person a, Person b) -> a.getAge() < b.getAge() ? -1 : a.getAge() == b.getAge() ? 0 : 1 ;
+		
+		Comparator<Person> compareByAge = Comparator.comparingInt(Person::getAge);
+		
 
 		assertThat(compareByAge.compare(michael, rod)).isLessThan(0);
 		assertThat(compareByAge.compare(paul, paul)).isEqualTo(0);
@@ -211,7 +236,7 @@ public class Sujet4 {
 	 */
 	@Test
 	public void f_comparator08() {
-		class Person {
+		class Person implements Comparable<Person> {
 
 			final String lastName, firstName;
 			final int age;
@@ -234,6 +259,16 @@ public class Sujet4 {
 			public int getAge() {
 				return age;
 			}
+
+			@Override
+			public int compareTo(Person o) {
+				Comparator<Person> compareByAge = Comparator.comparing(Person::getLastName)
+						.thenComparing(Person::getFirstName)
+						.thenComparingInt(Person::getAge);
+				compareByAge.compare(this, o);
+				
+				return compareByAge.compare(this, o);
+			}
 		}
 		final Person michael = new Person("Michael", "Jackson", 51);
 		final Person rod = new Person("Rod", "Stewart", 71);
@@ -241,14 +276,10 @@ public class Sujet4 {
 		final Person mick = new Person("Mick", "Jagger", 73);
 		final Person jermaine = new Person("Jermaine", "Jackson", 61);
 
-		Comparator<Person> compareByAge = (Person a, Person b) -> a.getAge() < b.getAge() ? -1 : a.getAge() == b.getAge() ? 0 : 1 ;
-
-		
-		Comparator<Person> natural = null;// Comparator.naturalOrder();
+		Comparator<Person> natural = Comparator.naturalOrder();
 
 		assertThat(natural.compare(michael, rod)).isLessThan(0);
 		assertThat(natural.compare(paul, paul)).isEqualTo(0);
 		assertThat(natural.compare(mick, jermaine)).isGreaterThan(0);
 	}
-
 }
