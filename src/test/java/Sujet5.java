@@ -88,7 +88,13 @@ public class Sujet5 {
         map.put("c", "charlie");
         map.put("d", "delta");
  
-        keys.forEach(__ -> {}/* XXX */);
+        keys.forEach(l -> {
+        	String tempo = map.get(l);
+        	if(tempo!= null)
+        		map.replace(l, tempo.toUpperCase());
+        	else
+        		map.put(l, l);
+        });
  
         assertThat(map).hasSize(7);
         assertThat(map)

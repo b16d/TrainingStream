@@ -139,11 +139,26 @@ public class Sujet4 {
 	@Test
 	public void i_list04() {
 
-		final List<String> strings = Arrays.asList("one", "two", "three", "four", "five", "six");
+		 List<String> strings = Arrays.asList("one", "two", "three", "four", "five", "six");
+//		final List<String> strings = Arrays.asList("one", "two", "three", "four", "five", "six");
 
-		// XXX
-		
-		assertThat(strings).containsExactly("one", "six", "two", "five", "four", "three");
+//		List<String> test = strings.stream()
+//				.sorted(Comparator.comparing(String::length)
+//						.thenComparing(Comparator.comparing(String::toString)))
+//				.collect(Collectors.toList());
+//			test.forEach(System.out::println);
+			
+//		
+		Function<List<String>, List<String>> func = list -> 
+			list.stream()
+			.sorted(Comparator.comparing(String::length)
+					.thenComparing(Comparator.comparing(String::toString)))
+			.collect(Collectors.toList());
+	
+		List<String> result = func.apply(strings);
+
+//		assertThat(strings).containsExactly("one", "six", "two", "five", "four", "three");
+		assertThat(result).containsExactly("one", "six", "two", "five", "four", "three");
 	}
 
 	/**
@@ -155,7 +170,7 @@ public class Sujet4 {
 		class Person {
 
 			final String lastName, firstName;
-			final int age;
+			final  int age;
 
 			public Person(String lastName, String firstName, int age) {
 				super();
@@ -182,7 +197,8 @@ public class Sujet4 {
 		final Person mick = new Person("Mick", "Jagger", 73);
 		final Person jermaine = new Person("Jermaine", "Jackson", 61);
 
-		Comparator<Person> compareByAge = null;
+		//
+		Comparator<Person> compareByAge = (Person a, Person b) -> a.getAge() < b.getAge() ? -1 : a.getAge() == b.getAge() ? 0 : 1 ;
 
 		assertThat(compareByAge.compare(michael, rod)).isLessThan(0);
 		assertThat(compareByAge.compare(paul, paul)).isEqualTo(0);
@@ -225,6 +241,9 @@ public class Sujet4 {
 		final Person mick = new Person("Mick", "Jagger", 73);
 		final Person jermaine = new Person("Jermaine", "Jackson", 61);
 
+		Comparator<Person> compareByAge = (Person a, Person b) -> a.getAge() < b.getAge() ? -1 : a.getAge() == b.getAge() ? 0 : 1 ;
+
+		
 		Comparator<Person> natural = null;// Comparator.naturalOrder();
 
 		assertThat(natural.compare(michael, rod)).isLessThan(0);
