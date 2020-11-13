@@ -27,7 +27,7 @@ public class Sujet5 {
         map.put(2, "bravo");
         map.put(3, "charlie");
  
-        // XXX
+        map.replaceAll((k,v) ->v = v.toUpperCase());
         
         assertThat(map).hasSize(3);
         assertThat(map).containsKeys(1, 2, 3);
@@ -53,7 +53,11 @@ public class Sujet5 {
         map.put("d", "delta");
         map.put("e", null);
  
-        keys.forEach(__ -> {}/* XXX */);
+        keys.forEach(l -> {
+        	if (map.get(l) == null)
+        		map.put(l, "");
+        	//if (map.)
+        }/* XXX */);
  
         assertThat(map).hasSize(7);
         assertThat(map)
